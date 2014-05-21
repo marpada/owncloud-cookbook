@@ -1,0 +1,13 @@
+name             'owncloud'
+maintainer       'YOUR_NAME'
+maintainer_email 'YOUR_EMAIL'
+license          'All rights reserved'
+description      'Installs/Configures owncloud'
+long_description 'Installs/Configures owncloud'
+version          '0.1.0'
+
+depends 'apt'
+depends 'nginx'
+depends 'mysql'
+depends 'database'
+depends 'php'
