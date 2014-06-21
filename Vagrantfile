@@ -77,6 +77,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         server_root_password: 'rootpass',
         server_debian_password: 'debpass',
         server_repl_password: 'replpass'
+      },
+      owncloud: {
+        adminpassword: 'admin',
+        mysql: {
+          dbpassword: 'owncloud'
+        }
       }
     }
 
