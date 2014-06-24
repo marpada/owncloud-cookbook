@@ -6,19 +6,87 @@
 #
 # All rights reserved - Do Not Redistribute
 #
+Chef::Application.fatal!("node['owncloud']['adminpassword'] cannot be empty") unless node['owncloud']['adminpassword'] && node['owncloud']['adminpassword'] != '' 
+
 include_recipe "apt"
-include_recipe "mysql::server"
-include_recipe "mysql::client"
 include_recipe "nginx::source"
+include_recipe "owncloud::php"
+include_recipe "owncloud::mysql"
 
-node.set['php']['install_method'] = 'dotdeb'
-include_recipe 'php::dotdeb'
-include_recipe 'php::fpm'
+node.set['nginx']['default_site_enabled'] = false
 
-remote_file '/var/tmp/' do
+template "#{node['nginx']['dir']}/sites-available/owncloud" do
+    source "nginx.conf.erb"
+    mode "0644"
+    variables(
+        server_name: node['owncloud']['server_names'].join(' '),
+        hostname: 'owncloud',
+        document_root: node['owncloud']['document_root'],
+        default_site: true,
+        #ssl_certificate: node['owncloud']['ssl_certificate'],
+        #ssl_certificate_key: node['owncloud']['ssl_certificate_key'],
+                  )
+end
+
+
+nginx_site "default.conf" do
+  enable false
+end
+nginx_site "owncloud" do
+  enable true
+end
+
+%w{wget curl}.each do |p|
+  package p do
+    action :install
+  end
+end
+
+
+package_name = node['owncloud']['download_url'].split('/')[-1]
+
+remote_file "#{Chef::Config[:file_cache_path]}/#{package_name}" do
   source node['owncloud']['download_url']
   mode 00644
   checksum node['owncloud']['package_sha256_checksum']
   end
 
+include_recipe "libarchive::default"
 
+libarchive_file "#{package_name}" do
+   path "#{Chef::Config[:file_cache_path]}/#{package_name}"
+   extract_to '/var/www'
+   owner node['nginx']['user']
+   group node['nginx']['group']
+   action :extract
+   extract_options [:no_overwrite]
+
+end
+
+package 'imagemagick' do
+  action :install
+end
+
+template "#{node['owncloud']['document_root']}/config/autoconfig.php" do
+  owner "www-data"
+  group "www-data"
+  mode "0600"
+  source "autoconfig.php.erb"
+  variables({
+         :dbuser => node['owncloud']['mysql']['dbuser'] ,
+         :dbname => node['owncloud']['mysql']['dbname'] ,
+         :dbpassword => node['owncloud']['mysql']['dbpassword'] ,
+         :dbhost => node['owncloud']['mysql']['dbhost'] ,
+         :admin => node['owncloud']['adminlogin'] ,
+         :admin_password => node['owncloud']['adminpassword'] ,
+         :data_directory => node['owncloud']['data_folder'] ,
+          })
+  not_if "test -f #{node['owncloud']['document_root']}/config/config.php"
+  notifies :run, "execute[finish install]", :immediately
+end
+
+execute 'finish install' do
+ command 'curl http://localhost/'
+ action :nothing
+ not_if "test -f #{node['owncloud']['document_root']}/config/config.php"
+end
