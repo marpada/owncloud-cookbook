@@ -7,4 +7,5 @@ default['owncloud']['data_folder'] = '/var/www/owncloud/data'
 #default['owncloud']['data_folder'] = "#{node['owncloud']['document_root']}/data"
 default['owncloud']['adminlogin'] = 'admin'
 default['owncloud']['adminpassword'] = ''
+default['owncloud']['max_upload_size'] = '512M'
 
