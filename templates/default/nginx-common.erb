@@ -1,0 +1,34 @@
+    <% if @server_name %>
+    server_name  <%= @server_name %>;
+    <% end %>
+
+    access_log  /var/log/nginx/<%= @hostname %>.access.log  combined;
+    error_log  /var/log/nginx/<%= @hostname %>.error.log;
+
+    client_max_body_size  <%= @client_max_body_size.downcase || '512m' %>;
+    root <%= @document_root %>;
+
+    rewrite ^/caldav(.*)$ /remote.php/caldav$1 redirect;
+    rewrite ^/carddav(.*)$ /remote.php/carddav$1 redirect;
+    rewrite ^/webdav(.*)$ /remote.php/webdav$1 redirect;
+    index index.php;
+
+    error_page 403 /core/templates/403.php;
+    error_page 404 /core/templates/404.php;
+
+    location / {
+    # The following 2 rules are only needed with webfinger
+    rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+    rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
+    rewrite ^/.well-known/carddav /remote.php/carddav/ redirect;
+    rewrite ^/.well-known/caldav /remote.php/caldav/ redirect;
+    rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
+    try_files $uri $uri/ index.php;
+     }
+ location ~ ^(.+?\.php)(/.*)?$ {
+   try_files $1 = 404;
+   include fastcgi_params;
+   fastcgi_param SCRIPT_FILENAME $document_root$1;
+   fastcgi_param PATH_INFO $2;
+   fastcgi_pass unix:<%= @fpm_socket %>;
+    }

@@ -4,8 +4,9 @@ default['owncloud']['package_sha256_checksum'] = '422b831ed5892ce20642a75130eb7a
 default['owncloud']['server_names'] = %w{owncloud.example.com}
 default['owncloud']['document_root'] = '/var/www/owncloud'
 default['owncloud']['data_folder'] = '/var/www/owncloud/data'
-#default['owncloud']['data_folder'] = "#{node['owncloud']['document_root']}/data"
 default['owncloud']['adminlogin'] = 'admin'
 default['owncloud']['adminpassword'] = ''
 default['owncloud']['max_upload_size'] = '512M'
+default['owncloud']['enable_ssl'] = true
+
 

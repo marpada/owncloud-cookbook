@@ -1,42 +1,17 @@
 server {
-    server_name  <%= @server_name %>;
-    <% if @https_boolean %>
+    listen 80 default;
+    <% if @enable_ssl %>
+    return https://$host$request_uri ;
+    <% else %>
+      <%= render "nginx-common.erb", :local => false %>
+    <% end %>
+}
+     <% if @enable_ssl %>
+server {
+    listen 443 default;
     ssl on;
     ssl_certificate <%= @ssl_certificate %>;
     ssl_certificate_key <%= @ssl_certificate_key %>;
-    <% end %>
-    listen 80 default;
-
-    access_log  /var/log/nginx/<%= @hostname %>.access.log  combined;
-    error_log  /var/log/nginx/<%= @hostname %>.error.log;
-
-    # path for static files
-    root <%= @document_root %>;
-
-    client_max_body_size 10G; # set max upload size
-    rewrite ^/caldav(.*)$ /remote.php/caldav$1 redirect;
-    rewrite ^/carddav(.*)$ /remote.php/carddav$1 redirect;
-    rewrite ^/webdav(.*)$ /remote.php/webdav$1 redirect;
-    index index.php;
-
-    error_page 403 /core/templates/403.php;
-    error_page 404 /core/templates/404.php;
-
-    location / {
-    # The following 2 rules are only needed with webfinger
-    rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
-    rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
-    rewrite ^/.well-known/carddav /remote.php/carddav/ redirect;
-    rewrite ^/.well-known/caldav /remote.php/caldav/ redirect;
-    rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
-    try_files $uri $uri/ index.php;
-     }
- location ~ ^(.+?\.php)(/.*)?$ {
-   try_files $1 = 404;
-   include fastcgi_params;
-   fastcgi_param SCRIPT_FILENAME $document_root$1;
-   fastcgi_param PATH_INFO $2;
-   fastcgi_pass unix:/var/run/owncloud.sock;
-    }
-
-        }
+    <%= render "nginx-common.erb", :local =>false %>
+}
+  <% end %>

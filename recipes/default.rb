@@ -9,39 +9,15 @@
 Chef::Application.fatal!("node['owncloud']['adminpassword'] cannot be empty") unless node['owncloud']['adminpassword'] && node['owncloud']['adminpassword'] != '' 
 
 include_recipe "apt"
-include_recipe "nginx::source"
 include_recipe "owncloud::php"
 include_recipe "owncloud::mysql"
+include_recipe "owncloud::nginx"
 
-node.set['nginx']['default_site_enabled'] = false
-
-template "#{node['nginx']['dir']}/sites-available/owncloud" do
-    source "nginx.conf.erb"
-    mode "0644"
-    variables(
-        server_name: node['owncloud']['server_names'].join(' '),
-        hostname: 'owncloud',
-        document_root: node['owncloud']['document_root'],
-        default_site: true,
-        #ssl_certificate: node['owncloud']['ssl_certificate'],
-        #ssl_certificate_key: node['owncloud']['ssl_certificate_key'],
-                  )
-end
-
-
-nginx_site "default.conf" do
-  enable false
-end
-nginx_site "owncloud" do
-  enable true
-end
-
-%w{wget curl}.each do |p|
+%w{wget curl imagemagick}.each do |p|
   package p do
     action :install
   end
 end
-
 
 package_name = node['owncloud']['download_url'].split('/')[-1]
 
@@ -60,11 +36,8 @@ libarchive_file "#{package_name}" do
    group node['nginx']['group']
    action :extract
    extract_options [:no_overwrite]
+   not_if "grep  #{node['owncloud']['version']} #{node['owncloud']['document_root']}/version.php";
 
-end
-
-package 'imagemagick' do
-  action :install
 end
 
 template "#{node['owncloud']['document_root']}/config/autoconfig.php" do
