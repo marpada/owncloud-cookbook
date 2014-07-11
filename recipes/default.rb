@@ -9,15 +9,10 @@
 Chef::Application.fatal!("node['owncloud']['adminpassword'] cannot be empty") unless node['owncloud']['adminpassword'] && node['owncloud']['adminpassword'] != '' 
 
 include_recipe "apt"
+include_recipe "owncloud::requirements"
 include_recipe "owncloud::php"
 include_recipe "owncloud::mysql"
 include_recipe "owncloud::nginx"
-
-%w{wget curl imagemagick}.each do |p|
-  package p do
-    action :install
-  end
-end
 
 package_name = node['owncloud']['download_url'].split('/')[-1]
 
