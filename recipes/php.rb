@@ -39,3 +39,20 @@ end
     end
   #end
 end
+
+if node['owncloud']['php']['xcache_enabled']
+  template "/etc/php5/conf.d/xcache.ini" do
+    owner 'root'
+    group 'root'
+    mode '0644'
+    source 'xcache.ini.erb'
+    variables ({ :xcache => node['owncloud']['php']['xcache'],
+                 :xcache_admin => node['owncloud']['php']['xcache_admin'],
+    })
+    notifies :reload, "service[php-fpm]"
+  end
+else
+  file "/etc/php5/conf.d/xcache.ini" do
+    action :delete
+  end
+end
