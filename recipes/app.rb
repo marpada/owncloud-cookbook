@@ -1,4 +1,5 @@
 package_name = node['owncloud']['download_url'].split('/')[-1]
+config_file = "#{node['owncloud']['document_root']}/config/config.php"
 
 remote_file "#{Chef::Config[:file_cache_path]}/#{package_name}" do
   source node['owncloud']['download_url']
@@ -38,7 +39,27 @@ template "#{node['owncloud']['document_root']}/config/autoconfig.php" do
 end
 
 execute 'finish install' do
- command 'curl http://localhost/'
- action :nothing
+ command 'curl -k -L http://localhost/'
+ action :run
  not_if "test -f #{node['owncloud']['document_root']}/config/config.php"
+end
+
+if node['owncloud']['disable_trusted_domains'] 
+  ruby_block 'authorized_domains' do
+    block do 
+      config = File.read config_file
+      config.gsub!(/'trusted_domains' =>.*array.*\(.*\),+?/m,"")
+      File.open('/tmp/config.php.tmp','w') do  |c|
+        c << config
+      end
+      FileUtils.mv('/tmp/config.php.tmp',config_file) if system("php -f /tmp/config.php.tmp")
+    end
+   only_if "test -f #{config_file} && grep -q trusted_domains #{config_file}"
+  end
+end
+
+file config_file do
+  owner 'www-data'
+  group 'www-data'
+  mode '0660'
 end

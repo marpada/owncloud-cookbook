@@ -8,5 +8,4 @@ default['owncloud']['adminlogin'] = 'admin'
 default['owncloud']['adminpassword'] = ''
 default['owncloud']['max_upload_size'] = '512M'
 default['owncloud']['enable_ssl'] = true
-
-
+default['owncloud']['disable_trusted_domains'] = true
