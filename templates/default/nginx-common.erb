@@ -25,6 +25,11 @@
     rewrite ^(/core/doc/[^\/]+/)$ $1/index.html;
     try_files $uri $uri/ index.php;
      }
+
+    location /data {
+      deny all;
+    }
+
  location ~ ^(.+?\.php)(/.*)?$ {
    try_files $1 = 404;
    include fastcgi_params;
