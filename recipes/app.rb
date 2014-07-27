@@ -34,14 +34,14 @@ template "#{node['owncloud']['document_root']}/config/autoconfig.php" do
          :admin_password => node['owncloud']['adminpassword'] ,
          :data_directory => node['owncloud']['data_folder'] ,
           })
-  not_if "test -f #{node['owncloud']['document_root']}/config/config.php"
+  not_if "test -f #{config_file}"
   notifies :run, "execute[finish install]", :immediately
 end
 
 execute 'finish install' do
  command 'curl -k -L http://localhost/'
  action :run
- not_if "test -f #{node['owncloud']['document_root']}/config/config.php"
+ not_if "test -f #{config_file}"
 end
 
 if node['owncloud']['disable_trusted_domains'] 
@@ -62,4 +62,6 @@ file config_file do
   owner 'www-data'
   group 'www-data'
   mode '0660'
+  not_if "test -f #{node['owncloud']['document_root']}/config/autoconfig.php"
+
 end
