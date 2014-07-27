@@ -2,8 +2,7 @@
 ; configuration for php Xcache module
 
 [xcache-common]
-;; install as zend extension (recommended), normally "$extension_dir/xcache.so"
-zend_extension = /usr/lib/php5/20090626/xcache.so
+extension = xcache.so
 
 [xcache.admin]
 <% @xcache_admin.each do |k,v| %>
