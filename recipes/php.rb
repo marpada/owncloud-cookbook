@@ -40,6 +40,9 @@ end
   #end
 end
 
+
+# Smelly code but couldn't figure out a way to find the proper
+# location of php config dir during run time.
 if node['owncloud']['php']['xcache_enabled']
   template "/etc/php5/conf.d/xcache.ini" do
     owner 'root'
@@ -50,9 +53,24 @@ if node['owncloud']['php']['xcache_enabled']
                  :xcache_admin => node['owncloud']['php']['xcache_admin'],
     })
     notifies :reload, "service[php-fpm]"
+    only_if "test -d /etc/php5/conf.d"
+  end
+  template "/etc/php5/mods-available/xcache.ini" do
+    owner 'root'
+    group 'root'
+    mode '0644'
+    source 'xcache.ini.erb'
+    variables ({ :xcache => node['owncloud']['php']['xcache'],
+                 :xcache_admin => node['owncloud']['php']['xcache_admin'],
+    })
+    notifies :reload, "service[php-fpm]"
+    only_if "test -d /etc/php5/mods-available"
   end
 else
   file "/etc/php5/conf.d/xcache.ini" do
+    action :delete
+  end
+  file "/etc/php5/mods-available/xcache.ini" do
     action :delete
   end
 end
