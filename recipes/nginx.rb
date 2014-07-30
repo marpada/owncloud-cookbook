@@ -36,7 +36,8 @@ template "#{node['nginx']['dir']}/sites-available/owncloud" do
         enable_ssl: node['owncloud']['enable_ssl'],
         ssl_certificate: ssl_certificate,
         ssl_certificate_key: ssl_certificate_key,
-        fpm_socket: node['owncloud']['php']['fpm_socket']
+        fpm_socket: node['owncloud']['php']['fpm_socket'],
+        fastcgi_read_timeout: node['owncloud']['timeout'],
 
                   )
 end

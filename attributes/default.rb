@@ -7,5 +7,6 @@ default['owncloud']['data_folder'] = '/var/www/owncloud/data'
 default['owncloud']['adminlogin'] = 'admin'
 default['owncloud']['adminpassword'] = ''
 default['owncloud']['max_upload_size'] = '512M'
+default['owncloud']['timeout'] = '1800' # For big files upload
 default['owncloud']['enable_ssl'] = true
 default['owncloud']['disable_trusted_domains'] = true

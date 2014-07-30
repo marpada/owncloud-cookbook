@@ -6,7 +6,7 @@ default['owncloud']['php']['max_spare_servers'] = '5'
 default['owncloud']['php']['options'] = {}
 default['owncloud']['php']['options']['upload_max_filesize'] = node['owncloud']['max_upload_size'] || "512M"
 default['owncloud']['php']['options']['post_max_size'] = node['owncloud']['max_upload_size'] || "512M"
-default['owncloud']['php']['options']['max_execution_time'] = 18000
+default['owncloud']['php']['options']['max_execution_time'] = node['owncloud']['timeout']
 
 ## XCACHE extension settings.
 #
