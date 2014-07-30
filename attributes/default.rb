@@ -1,6 +1,6 @@
-default['owncloud']['version'] = '6.0.4'
+default['owncloud']['version'] = '7.0.0'
 default['owncloud']['download_url'] = "http://download.owncloud.org/community/owncloud-#{default['owncloud']['version']}.tar.bz2"
-default['owncloud']['package_sha256_checksum'] = '49b576bf9e7131c08f0437bbbaafdcd900b37010eb90b23048b69dbbb6c01532'
+default['owncloud']['package_sha256_checksum'] = '9aca2aa0a0cd7b052e881c30ad6de25d135ec3f88a3920274f1be223b4cabedf'
 default['owncloud']['server_names'] = %w{owncloud.example.com}
 default['owncloud']['document_root'] = '/var/www/owncloud'
 default['owncloud']['data_folder'] = '/var/www/owncloud/data'
