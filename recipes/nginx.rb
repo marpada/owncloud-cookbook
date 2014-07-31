@@ -18,7 +18,7 @@ if node['owncloud']['enable_ssl']
       creates "/etc/ssl/certs/ssl-cert-snakeoil.pem"
       end
   end
-  ssl_certificate = node['owncloud']['ssl_certificate_key'] || "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+  ssl_certificate = node['owncloud']['ssl_certificate'] || "/etc/ssl/certs/ssl-cert-snakeoil.pem"
   ssl_certificate_key = node['owncloud']['ssl_certificate_key'] || '/etc/ssl/private/ssl-cert-snakeoil.key'
 end
 
