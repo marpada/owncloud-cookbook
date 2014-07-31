@@ -23,8 +23,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # ubuntu-14.04 80 => 8092 443 => 8093
 
     config.vm.define os do |machine|
-      machine.vm.box = "opscode_#{os}_provisionerless"
-      machine.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_#{os}_provisionerless.box"
+      machine.vm.box = "opscode_#{os}_chef-provisionerless"
+      machine.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_#{os}_chef-provisionerless.box"
       machine.vm.network "forwarded_port", guest: 80, host:base_port + 2*i 
       machine.vm.network "forwarded_port", guest: 443, host:base_port + 2* i + 1 
       machine.vm.provision :chef_solo do |chef|
