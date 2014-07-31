@@ -10,3 +10,5 @@ default['owncloud']['max_upload_size'] = '512M'
 default['owncloud']['timeout'] = '1800' # For big files upload
 default['owncloud']['enable_ssl'] = true
 default['owncloud']['disable_trusted_domains'] = true
+default['owncloud']['ssl_certificate'] = nil
+default['owncloud']['ssl_certificate_key'] = nil
