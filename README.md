@@ -166,6 +166,7 @@ self-signed certificates if certs not providers</td>
 
 Include `owncloud` in your node's `run_list`. At least provide values for
 node['owncloud']['adminpassword'], node['owncloud']['mysql']['dbpassword'], node['mysql']['server_root_password'],node['mysql']['server_debian_password'] and node['mysql']['server_repl_password'].
+
 Override other attributes for the community nginx, MySQL server or PHP attributes to your convenience.
 
 ```json
