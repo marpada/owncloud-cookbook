@@ -1,0 +1,16 @@
+{
+  "mysql": {
+    "server_root_password": "rootpass",
+    "server_debian_password": "debpass",
+    "server_repl_password": "replpass"
+  },
+  "owncloud": {
+    "adminpassword": "myverystrongpassword",
+    "server_names": [ "owncloud.example.com" ],
+    "mysql": {
+      "dbpassword": "owncloud"
+    }
+  },
+  "run_list": [ "recipe[owncloud::default]" ]
+
+}
